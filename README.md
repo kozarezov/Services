@@ -19,3 +19,5 @@
 * Поддержка перенаправления http на https
 * Создание SSL
 * Включение/Отключение автоиндексации
+
+<img src="https://github.com/kozarezov/Services/blob/main/Screen%20Shot.png" width="800"> 
