@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: influxdb-pv-claim
+  namespace: default
+  labels:
+    app: influxdb-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb-deployment
+  labels:
+    app: influxdb
+spec:
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+      - name: influxdb
+        image: alpine_influxdb
+        imagePullPolicy: Never
+        env:
+        - name: INFLUXDB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: kubernetes-secret
+              key: influxdb_db_name
+        - name: INFLUXDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: kubernetes-secret
+              key: influxdb_user
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kubernetes-secret
+              key: influxdb_password
+        livenessProbe:
+          exec:
+            command:
+            - service
+            - influxdb 
+            - status
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        ports:
+        - containerPort: 8086
+        volumeMounts:
+          - mountPath: /var/lib/influxdb
+            name: influxdb-persistent-volume
+      volumes:
+       - name: influxdb-persistent-volume
+         persistentVolumeClaim:
+          claimName: influxdb-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: influxdb
+    port: 8086
+    targetPort: 8086
+    protocol: TCP
+  selector:
+    app: influxdb

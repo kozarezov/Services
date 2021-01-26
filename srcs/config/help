@@ -1,0 +1,63 @@
+brew cask install virtualbox
+brew install kubectl
+brew install minikube
+mv ./minikube /goinfre/ceccentr
+cd /goinfre/ceccentr
+ln -s /goinfre/ceccentr/.minikube /Users/ceccentr/.minikube
+mkdir /goinfre/ceccentr/.minikube
+minikube start --vm-driver=virtualbox --disk-size=5000MB
+minikube dashboard
+
+
+
+curl --ftp-ssl --insecure --user ftps_user:password ftp://192.168.99.2:21
+ssh user@ip -p 
+ssh-keygen -R 
+
+# Docker
+docker build -t name_image path_Dockerfile
+
+docker build -t alpine_nginx .
+
+docker run -it -p 80:80 alpine_nginx
+
+docker run -it -p 21:21 -p 21000-21010:21000-21010 alpineftp
+
+docker run -it -p 80:80 -e USER=ceccentr alpine_nginx
+
+docker run --network="bridge" -t alpine_wordpress .
+
+docker inspect ID
+
+docker kill IDcontaine
+
+- MYSQL
+docker run -it -p 3306:3306 --network="bridge" -e PASSWORD=password1234 -e WP_DB_NAME=wordpress -e WP_USER=wp_user alpine_mysql
+- Wordpress
+docker run -it -p 5050:5050 --network="bridge" -e PASSWORD=password1234 -e WP_DB_NAME=wordpress -e WP_USER=wp_user -e MYSQL=172.17.0.2 alpine_wordpress
+- PhpMyAdmin
+docker run -it -p 5000:5000 alpine_phpmyadmin
+
+docker ps
+docker stop
+docker image rm ID
+
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+
+Kubernetes
+
+kubectl ...
+kubectl apply -f pod.yaml
+kubectl create -f pod.yaml 
+kubectl exec -t -i name -- /bin/bash 
+kubectl get deployment
+kubectl get pods (list les pods)
+kubectl describe pod/name
+kubectl get service
+kubectl delete deployment name
+
+minikube dashboard
+minikube service <nom du service> --url
+
+snapshot VM
